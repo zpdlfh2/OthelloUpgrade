@@ -172,9 +172,6 @@ bool setPossible() {
 
 int main()
 {
-
-
-
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
@@ -195,10 +192,8 @@ int main()
 						setState(x, y, State::BLACK);
 						reverse(x, y);
 						turn = Turn::WHITE;
-						turnCheck->setImage("Images/white turn.png");
-						//timer->start();	
-					}
-					
+						turnCheck->setImage("Images/white turn.png");	
+					}					
 					else {
 						setState(x, y, State::WHITE);
 						reverse(x, y);
