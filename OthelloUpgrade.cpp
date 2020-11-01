@@ -171,12 +171,6 @@ bool setPossible() {
 	return possible;
 }
 
-void autoPlay() {
-
-}
-
-
-
 int main()
 {
 
@@ -193,20 +187,20 @@ int main()
 	whitePoint1 = Object::create("Images/L0.png", scene, 1070, 220);
 	whitePoint2 = Object::create("Images/L2.png", scene, 1150, 220);
 
-	timer = Timer::create(1.0f);
-	auto count = 0;
+	//timer = Timer::create(1.0f);
+	//auto count = 0;
 
-	timer->setOnTimerCallback([&](TimerPtr t)->bool {
-		count++;
-		if (count < 5) {
-			t->set(0.5f);
-			t->start();
-		}
-		if (count == 2) {
-	
-		}
-		return true;
-		});
+	//timer->setOnTimerCallback([&](TimerPtr t)->bool {
+	//	count++;
+	//	if (count < 5) {
+	//		t->set(0.5f);
+	//		t->start();
+	//	}
+	//	if (count == 2) {
+	//
+	//	}
+	//	return true;
+	//	});
 
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 8; x++) {
