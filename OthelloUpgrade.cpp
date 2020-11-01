@@ -13,7 +13,7 @@ ObjectPtr whitePoint1;
 ObjectPtr whitePoint2;
 int getBlack;
 int getWhite;
-TimerPtr timer;
+//TimerPtr timer;
 
 enum class State {
 	BLANK,
@@ -212,7 +212,7 @@ int main()
 						reverse(x, y);
 						turn = Turn::WHITE;
 						turnCheck->setImage("Images/white turn.png");
-						timer->start();	
+						//timer->start();	
 					}
 					
 					else {
