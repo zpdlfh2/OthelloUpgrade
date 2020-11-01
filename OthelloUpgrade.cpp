@@ -7,8 +7,13 @@ using namespace std;
 
 ObjectPtr board[8][8];
 ScenePtr scene;
-
-
+ObjectPtr blackPoint1;
+ObjectPtr blackPoint2;
+ObjectPtr whitePoint1;
+ObjectPtr whitePoint2;
+int getBlack;
+int getWhite;
+TimerPtr timer;
 
 enum class State {
 	BLANK,
@@ -22,7 +27,7 @@ enum class Turn {
 	BLACK,
 	WHITE
 };
-Turn turn = Turn::BLACK; // 초기값은 BLACK으로
+Turn turn = Turn::BLACK; // 초기값은 BLACK으로 설정
 
 void setState(int x, int y, State state) {   //현재 놓여지는 돌의 상태를 조정하는 함수      
 	switch (state) {
@@ -35,13 +40,8 @@ void setState(int x, int y, State state) {   //현재 놓여지는 돌의 상태
 }
 
 void checkPoint() {
-	static auto blackPoint1 = Object::create("Images/L0.png", scene, 750, 220);
-	static auto blackPoint2 = Object::create("Images/L2.png", scene, 830, 220);
-	static auto whitePoint1 = Object::create("Images/L0.png", scene, 1070, 220);
-	static auto whitePoint2 = Object::create("Images/L2.png", scene, 1150, 220);
-
-	auto getBlack = 0;
-	auto getWhite = 0;
+	getBlack = 0;
+	getWhite = 0;
 
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 8; x++) {
@@ -101,10 +101,6 @@ bool checkPossible(int x, int y) {
 
 	bool possible = false;
 
-	//for (int i = 0; i < 8; i++) {
-	//	checkPossible(x, y, delta[i][0], delta[i][1]);
-	//}
-
 	for (auto d : delta) {		        // range for 지원 
 		if (checkPossible(x, y, d[0], d[1])) possible = true;   //8방향 중 하나만 가능해도 possible이됨.
 	}
@@ -115,6 +111,7 @@ bool checkPossible(int x, int y) {
 void reverse(int x, int y, int dx, int dy) {
 	State self = turn == Turn::BLACK ? State::BLACK : State::WHITE;
 	State other = turn == Turn::BLACK ? State::WHITE : State::BLACK;
+    //"조건 ? A : B"  >>  조건이 만족되면 A, 그렇지 않으면 B.
 
 	bool possible = false;
 	for (x += dx, y += dy; x >= 0 && x < 8 && y >= 0 && y < 8; x += dx, y += dy) {    //한 라인을 계속 나아가며 체크함
@@ -174,20 +171,42 @@ bool setPossible() {
 	return possible;
 }
 
+void autoPlay() {
 
+}
 
 
 
 int main()
 {
-	scene = Scene::create("Othello", "Images/background.png");
-	auto turnCheck = Object::create("Images/black turn.png", scene, 750, 380);
+
 
 
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
 
+	scene = Scene::create("Othello", "Images/background.png");
+	auto turnCheck = Object::create("Images/black turn.png", scene, 750, 380);
+	blackPoint1 = Object::create("Images/L0.png", scene, 750, 220);
+	blackPoint2 = Object::create("Images/L2.png", scene, 830, 220);
+	whitePoint1 = Object::create("Images/L0.png", scene, 1070, 220);
+	whitePoint2 = Object::create("Images/L2.png", scene, 1150, 220);
+
+	timer = Timer::create(1.0f);
+	auto count = 0;
+
+	timer->setOnTimerCallback([&](TimerPtr t)->bool {
+		count++;
+		if (count < 5) {
+			t->set(0.5f);
+			t->start();
+		}
+		if (count == 2) {
+	
+		}
+		return true;
+		});
 
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 8; x++) {
@@ -199,7 +218,7 @@ int main()
 						reverse(x, y);
 						turn = Turn::WHITE;
 						turnCheck->setImage("Images/white turn.png");
-						
+						timer->start();	
 					}
 					
 					else {
@@ -211,7 +230,9 @@ int main()
 					if (!setPossible()) {
 						turn = turn == Turn::BLACK ? Turn::WHITE : Turn::BLACK;   // toggle
 						if (!setPossible()) {   // 둘다 안될 때
-							showMessage("End Game");
+							if (getBlack > getWhite) showMessage("End Game! Black Win!");
+							else if (getBlack < getWhite) showMessage("End Game! White WIn!");
+							else if (getBlack == getWhite) showMessage("End Game! Draw!");
 						}
 					}
 				}
